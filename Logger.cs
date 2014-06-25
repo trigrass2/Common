@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Collections.Concurrent;
 
 namespace Common
 {
@@ -25,9 +26,9 @@ namespace Common
     public class Logger
     {
         public delegate void logUpdateCallback();
-        static List<Queue<LogMessage>> logQueues = new List<Queue<LogMessage>>();
+        static List<ConcurrentQueue<LogMessage>> logQueues = new List<ConcurrentQueue<LogMessage>>();
         static List<logUpdateCallback> logUpdateCallbacks = new List<logUpdateCallback>();
-        public static void AddQueue(Queue<LogMessage> q, logUpdateCallback cb = null)
+        public static void AddQueue(ConcurrentQueue<LogMessage> q, logUpdateCallback cb = null)
         {
             logQueues.Add(q);
             if(cb != null)
