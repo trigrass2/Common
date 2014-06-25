@@ -13,6 +13,7 @@ namespace Common
     }
     public class LogMessage
     {
+        public DateTime timestamp = DateTime.Now;
         public LogLevel level { get; private set; }
         public string message { get; private set; }
         public LogMessage(LogLevel l, string msg)
