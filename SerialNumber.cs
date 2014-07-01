@@ -9,6 +9,21 @@ namespace Common
 { 
     public class SerialNumber
     {
+        public Plant plant { get; private set; }
+        public Model model { get; private set; }
+        public int week { get; private set; }
+        public int year { get; private set; }
+        public long number { get; private set; }
+
+        public SerialNumber(string serial)
+        {
+            this.plant = (Plant)(Base36.Decode(serial.Substring(0, 2)));
+            this.year = Convert.ToInt32(serial.Substring(2, 1), 10);
+            this.week = Convert.ToInt32(serial.Substring(3, 2), 10);
+            this.number= Base36.Decode(serial.Substring(5, 3));
+            this.model = (Model)(Base36.Decode(serial.Substring(8, 3)));
+        }
+
         public enum Plant
         {
             Tolstraat = 0,
