@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace Common
 { 
@@ -38,9 +39,8 @@ namespace Common
             }
         }
 
-        public static string Generate(Plant p, Model m, long number)
+        public static string Generate(Plant p, Model m, long number, DateTime d)
         {
-            DateTime d = DateTime.Now;
             String serial = "";
             serial += Base36.Encode((long)p, 2);                            //Plant(2 digits)
             serial += d.ToString("yy").Substring(1);                        //Year (1 digit)
@@ -63,6 +63,27 @@ namespace Common
 
             // Return the week of our adjusted day
             return CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(time, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
+        }
+
+        public static bool GenerateUnique(Plant p, Model m, DateTime t, List<string> serialList, ref string serial)
+        {
+            string serialPattern = Generate(p, m, 0, t);
+            //Replace number part in serial with ?
+            serialPattern = serialPattern.Substring(0, 5) + "???" + serialPattern.Substring(8);
+            Regex r = new Regex(Utils.WildcardToRegex(serialPattern));
+            List<long> filteredSerials = serialList.Where(x => r.IsMatch(x)).Select(x=>Base36.Decode(x.Substring(5,3))).ToList();
+            long number = 0;
+            if (filteredSerials.Count > 0)
+            {
+                if (filteredSerials.Max() >= Base36.MaxValue(3))
+                {
+                    Logger.Error("Can't make more serials with this combo, maximum reached");
+                    return false;
+                }
+                number = filteredSerials.Max() + 1;
+            }
+            serial = Generate(p, m, number, t);
+            return true;
         }
     }
 
@@ -109,6 +130,11 @@ namespace Common
                 pos++;
             }
             return result;
+        }
+
+        public static int MaxValue(int length)
+        {
+            return 36 ^ length;
         }
     }
 
