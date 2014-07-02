@@ -26,6 +26,7 @@ namespace Common
 
         public enum Plant
         {
+            Unknown = -1,
             Tolstraat = 0,
             ConnectLokeren = 1
         };
@@ -36,6 +37,7 @@ namespace Common
         const int GENERATION_OFFSET = 36; //"?0";
         public enum Model
         {
+            Unknown              = -1,
             SmartScope_Proto_3_3 = (MODEL_SMARTSCOPE * MODEL_OFFSET) + (0 * GENERATION_OFFSET) + 0,
             SmartScope_3_4_0     = (MODEL_SMARTSCOPE * MODEL_OFFSET) + (1 * GENERATION_OFFSET) + 0,
             SmartScope_3_5_0     = (MODEL_SMARTSCOPE * MODEL_OFFSET) + (1 * GENERATION_OFFSET) + 1,
@@ -46,16 +48,20 @@ namespace Common
             string format = "{0,10} {1,15:G} {1,8:D} {2,5}";
             foreach (Plant p in Enum.GetValues(typeof(Plant)))
             {
-                Logger.Info(String.Format(format, "Plant", p, Base36.Encode((long)p, 2)));
+                if((int)p > 0)
+                    Logger.Info(String.Format(format, "Plant", p, Base36.Encode((long)p, 2)));
             }
-            foreach (Model p in Enum.GetValues(typeof(Model)))
+            foreach (Model m in Enum.GetValues(typeof(Model)))
             {
-                Logger.Info(String.Format(format, "Model", p, Base36.Encode((long)p, 3)));
+                if ((int)m > 0)
+                    Logger.Info(String.Format(format, "Model", m, Base36.Encode((long)m, 3)));
             }
         }
 
         public static string Generate(Plant p, Model m, long number, DateTime d)
         {
+            if (p == Plant.Unknown || m == Model.Unknown)
+                throw new Exception("Can't generate serial for unknown model or plant");
             String serial = "";
             serial += Base36.Encode((long)p, 2);                            //Plant(2 digits)
             serial += d.ToString("yy").Substring(1);                        //Year (1 digit)
