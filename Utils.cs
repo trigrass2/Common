@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 
 namespace Common
 {
-    class Utils
+    public class Utils
     {
         public static List<FileInfo> GetFiles(string dir, string pattern, List<FileInfo> files = null)
         {
@@ -62,6 +62,19 @@ namespace Common
                               .Replace(@"\*", ".*")
                               .Replace(@"\?", ".")
                        + "$";
+        }
+
+        public static string parseSerialFromDeviceID(string deviceId)
+        {
+            string[] splitDeviceId = deviceId.Split('\\');
+            string[] serialArray;
+            string serial;
+            int arrayLen = splitDeviceId.Length - 1;
+
+            serialArray = splitDeviceId[arrayLen].Split('&');
+            serial = serialArray[0];
+
+            return serial;
         }
 
     }
