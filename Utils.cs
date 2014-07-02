@@ -412,6 +412,84 @@ namespace Common
         {
             return BitReverseTable[toReverse];
         }
+
+        static public float[] CastBoolArrayToFloatArray(bool[] input)
+        {
+            Func<bool, float> boolToFloat = x => x ? 1f : 0f;
+            return Utils.TransformArray(input, boolToFloat);
+        }
+
+        static public string precisionFormat(double number, int precision)
+        {
+            string format = String.Format("{{0:N{0}}}", precision);
+            return String.Format(format, number);
+        }
+        static public string significantDigitsFormat(double number, int significance)
+        {
+            int beforeComma = (int)Math.Max(0, Math.Floor(Math.Log10(Math.Abs(number)))) + 1;
+
+            int wholes = (int)Math.Min(significance, beforeComma);
+
+            int decimals = significance - wholes;
+
+            string format = String.Format("{{0:N{0}}}", decimals);
+            return String.Format(format, number);
+        }
+
+        //FIXME: make unit an ENUM
+        static public string siScale(double number, int precision, int significance = -1)
+        {
+            double divider = number == 0 ? 1 : Math.Floor((Math.Log(Math.Abs(number), 1000)));
+            if (significance > 0)
+                return Utils.significantDigitsFormat(number / Math.Pow(1000.0, divider), significance);
+            else
+                return Utils.precisionFormat(number / Math.Pow(1000.0, divider), precision);
+        }
+        static public string siPrefix(double number, string unit)
+        {
+            int scale = number == 0 ? 0 : (int)(Math.Floor(Math.Log(Math.Abs(number), 1000)));
+            switch (scale)
+            {
+                case -4: return "p" + unit;
+                case -3: return "n" + unit;
+                //FIXME: use μ when spritefont supports this character
+                case -2: return "u" + unit;
+                case -1: return "m" + unit;
+                case 0: return unit;
+                case 1: return "k" + unit;
+                case 2: return "M" + unit;
+                case 3: return "G" + unit;
+                case 4: return "T" + unit;
+                default: return unit;
+            }
+        }
+        /// <summary>
+        /// Finds the per-division magnitude
+        /// </summary>
+        /// <param name="fullRange">full range of the screen</param>
+        /// <param name="divisions">the number of divisions on the screen</param>
+        /// <returns></returns>
+        static public double divisionFinder(ref double fullRange, ref double divisions)
+        {
+            double divisionMinimalRange = fullRange / divisions;
+            //First figure out if the division's base is going to be 2, 5 or 10
+            double divisionBase = 10;
+            double mostSignificantDecimal = Math.Floor(divisionMinimalRange / Math.Pow(10.0, Math.Floor(Math.Log10(divisionMinimalRange))));
+            while (mostSignificantDecimal < Math.Floor(divisionBase / 2.0))
+            {
+                divisionBase = Math.Floor(divisionBase / 2.0);
+            }
+            //Now we find out if, for e.g. 2, if we're having a 2, 20 or 200, the so-called "tens"
+            double orderOfThousand = Math.Floor(Math.Log(divisionMinimalRange, 1000.0));
+            int tens = (int)Math.Floor(Math.Log10(divisionMinimalRange / Math.Pow(1000, orderOfThousand)));
+
+            //Now we just put it all together
+            double divisionRange = divisionBase * Math.Pow(10, tens + 3 * orderOfThousand);
+            divisions = fullRange / divisionRange;
+            fullRange = (float)(divisionRange * divisions);
+            return divisionRange;
+        }
+
     }
 
 }
