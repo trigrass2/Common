@@ -490,6 +490,11 @@ namespace Common
             return divisionRange;
         }
 
+        public static IEnumerable<double> EnumerableRange(double min, double max, int steps)
+        {
+            return Enumerable.Range(0, steps)
+                 .Select(i => min + (max - min) * ((double)i / (steps - 1)));
+        }
     }
 
 }
