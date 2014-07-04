@@ -321,14 +321,13 @@ namespace Common
             BinaryReader br = new BinaryReader(fs);
             long numBytes = new FileInfo(fileName).Length;
 
-            return BinaryReaderStuffer(br, numBytes, multiple, stuffing);
-        }
-
-        public static byte[] BinaryReaderStuffer(BinaryReader br, long numBytes, int multiple, byte stuffing)
-        {
             byte[] buff = null;
             buff = br.ReadBytes((int)numBytes);
+            return ByteBufferStuffer(buff, multiple, stuffing);
+        }
 
+        public static byte[] ByteBufferStuffer(byte[] buff, int multiple, byte stuffing)
+        {
             //Check if a multiple was specified or if we happen to be lucky
             if (multiple <= 0 || buff.Length % multiple == 0)
                 return buff;
