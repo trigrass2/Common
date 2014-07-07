@@ -494,6 +494,12 @@ namespace Common
             return Enumerable.Range(0, steps)
                  .Select(i => min + (max - min) * ((double)i / (steps - 1)));
         }
+
+        public static string GetTempFileName(string extension)
+        {
+            return System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + extension;
+        }
+
     }
 
 }
