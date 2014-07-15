@@ -18,10 +18,15 @@ namespace Common
         public SerialNumber(string serial)
         {
             this.plant = (Plant)(Base36.Decode(serial.Substring(0, 2)));
-            this.year = Convert.ToInt32(serial.Substring(2, 1), 10);
+            this.year = Convert.ToInt32(serial.Substring(2, 1), 10) + (DateTime.Now.Year / 10 * 10);
             this.week = Convert.ToInt32(serial.Substring(3, 2), 10);
             this.number= Base36.Decode(serial.Substring(5, 3));
             this.model = (Model)(Base36.Decode(serial.Substring(8, 3)));
+        }
+
+        override public string ToString()
+        {
+            return Generate(plant, model, number, FirstDateOfIso8601Week(year, week));
         }
 
         public enum Plant
@@ -84,6 +89,24 @@ namespace Common
 
             // Return the week of our adjusted day
             return CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(time, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
+        }
+
+        public static DateTime FirstDateOfIso8601Week(int year, int weekOfYear)
+        {
+            DateTime jan1 = new DateTime(year, 1, 1);
+            int daysOffset = DayOfWeek.Thursday - jan1.DayOfWeek;
+
+            DateTime firstThursday = jan1.AddDays(daysOffset);
+            var cal = CultureInfo.CurrentCulture.Calendar;
+            int firstWeek = cal.GetWeekOfYear(firstThursday, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
+
+            var weekNum = weekOfYear;
+            if (firstWeek <= 1)
+            {
+                weekNum -= 1;
+            }
+            var result = firstThursday.AddDays(weekNum * 7);
+            return result.AddDays(-3);
         }
 
         public static bool GenerateUnique(Plant p, Model m, DateTime t, List<string> serialList, ref string serial)
