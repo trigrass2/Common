@@ -179,7 +179,7 @@ namespace Common
 
         public static int MaxValue(int length)
         {
-            return 36 ^ length;
+            return (int)Math.Pow(36, length) - 1;
         }
     }
 
