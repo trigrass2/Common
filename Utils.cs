@@ -472,10 +472,10 @@ namespace Common
             double divisionMinimalRange = fullRange / divisions;
             //First figure out if the division's base is going to be 2, 5 or 10
             double divisionBase = 10;
-            double mostSignificantDecimal = Math.Floor(divisionMinimalRange / Math.Pow(10.0, Math.Floor(Math.Log10(divisionMinimalRange))));
+            double mostSignificantDecimal = Math.Floor(divisionMinimalRange / Math.Pow(10.0, Math.Floor(Math.Log10(divisionMinimalRange)))); //eg: 200, 20 and 2 all become 2
             while (mostSignificantDecimal < Math.Floor(divisionBase / 2.0))
             {
-                divisionBase = Math.Floor(divisionBase / 2.0);
+                divisionBase = Math.Floor(divisionBase / 2.0); //becomes 10,5,2
             }
             //Now we find out if, for e.g. 2, if we're having a 2, 20 or 200, the so-called "tens"
             double orderOfThousand = Math.Floor(Math.Log(divisionMinimalRange, 1000.0));
