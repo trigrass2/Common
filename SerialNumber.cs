@@ -46,6 +46,7 @@ namespace Common
             SmartScope_Proto_3_3 = (MODEL_SMARTSCOPE * MODEL_OFFSET) + (0 * GENERATION_OFFSET) + 0,
             SmartScope_3_4_0     = (MODEL_SMARTSCOPE * MODEL_OFFSET) + (1 * GENERATION_OFFSET) + 0,
             SmartScope_3_5_0     = (MODEL_SMARTSCOPE * MODEL_OFFSET) + (1 * GENERATION_OFFSET) + 1,
+            SmartScope_3_7_0     = (MODEL_SMARTSCOPE * MODEL_OFFSET) + (1 * GENERATION_OFFSET) + 2,
         }
 
         public static void LogModelsAndPlants()
@@ -178,7 +179,7 @@ namespace Common
 
         public static int MaxValue(int length)
         {
-            return 36 ^ length;
+            return (int)Math.Pow(36, length) - 1;
         }
     }
 
