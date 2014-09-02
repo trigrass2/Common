@@ -33,7 +33,7 @@ namespace Common
         {
             Unknown = -1,
             Tolstraat = 0,
-            ConnectLokeren = 1
+            Poperinge = 1
         };
         
         const int MODEL_OFFSET = 36*36; //"?00";
