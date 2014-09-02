@@ -417,31 +417,59 @@ namespace Common
             return Utils.TransformArray(input, boolToFloat);
         }
 
-        static public string precisionFormat(double number, int precision)
+        static public string numberSignificanceFormat(double number, int significance)
         {
-            string format = String.Format("{{0:N{0}}}", precision);
-            return String.Format(format, number);
-        }
-        static public string significantDigitsFormat(double number, int significance)
-        {
-            int beforeComma = (int)Math.Max(0, Math.Floor(Math.Log10(Math.Abs(number)))) + 1;
+            if (significance == 0)
+                return String.Format("{0}", number);
+            
+            string[] parts = Math.Abs(number).ToString().Split(System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator[0]);
 
-            int wholes = (int)Math.Min(significance, beforeComma);
+            //Take the whole part for as far as possble
+            string result = parts[0].Substring(0, (Math.Min(parts[0].Length, significance)));
 
-            int decimals = significance - wholes;
-
-            string format = String.Format("{{0:N{0}}}", decimals);
-            return String.Format(format, number);
-        }
-
-        //FIXME: make unit an ENUM
-        static public string siScale(double number, int precision, int significance = -1)
-        {
-            double divider = number == 0 ? 1 : Math.Floor((Math.Log(Math.Abs(number), 1000)));
-            if (significance > 0)
-                return Utils.significantDigitsFormat(number / Math.Pow(1000.0, divider), significance);
+            //If we achieved the significance return but add 0's if necessary
+            if (result.Length == significance)
+            {
+                if (result.Length < parts[0].Length)
+                {
+                    result = String.Concat(result, new String('0', parts[0].Length - result.Length));
+                }
+            }
+            //Add decimal part
             else
-                return Utils.precisionFormat(number / Math.Pow(1000.0, divider), precision);
+            {
+                result += System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator[0];
+                if(parts.Length == 2)
+                    result += parts[1].Substring(0, Math.Min(parts[1].Length, significance - parts[0].Length));
+                if (result.Length - 1 < significance)
+                {
+                    result = String.Concat(result, new String('0', significance - (result.Length-1)));
+                }
+            }
+
+            return number < 0 ? "-" + result : result;
+        }
+
+        static public double precisionRound(double number, double precision)
+        {
+            if (precision == 0)
+                return number;
+            return ((int)Math.Round(number / precision, MidpointRounding.AwayFromZero)) * precision;
+        }
+
+        static public string precisionFormat(double number, double precision, int significance)
+        {
+            return numberSignificanceFormat(precisionRound(number, precision), significance);
+        }
+
+        static public string siScale(double number, double precision, int significance)
+        {
+            //First scale it to si scale
+            double divider = number == 0 ? 1 : Math.Floor((Math.Log(Math.Abs(number), 1000)));
+            number = number / Math.Pow(1000.0, divider);
+            //The round to precision
+            number = precisionRound(number, precision);
+            return numberSignificanceFormat(number, significance);
         }
         static public string siPrefix(double number, string unit)
         {
