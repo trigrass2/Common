@@ -466,9 +466,10 @@ namespace Common
         {
             //First scale it to si scale
             double divider = number == 0 ? 1 : Math.Floor((Math.Log(Math.Abs(number), 1000)));
-            number = number / Math.Pow(1000.0, divider);
+            divider = Math.Pow(1000.0, divider);
+            number = number / divider;
             //The round to precision
-            number = precisionRound(number, precision);
+            number = precisionRound(number, precision / divider);
             return numberSignificanceFormat(number, significance);
         }
         static public string siPrefix(double number, string unit)
