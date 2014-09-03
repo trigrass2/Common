@@ -450,16 +450,16 @@ namespace Common
             return number < 0 ? "-" + result : result;
         }
 
-        static public double precisionRound(double number, double precision)
+        static public double precisionTruncate(double number, double precision)
         {
             if (precision == 0)
                 return number;
-            return ((int)Math.Round(number / precision, MidpointRounding.AwayFromZero)) * precision;
+            return ((int)Math.Truncate(number / precision)) * precision;
         }
 
         static public string precisionFormat(double number, double precision, int significance)
         {
-            return numberSignificanceFormat(precisionRound(number, precision), significance);
+            return numberSignificanceFormat(precisionTruncate(number, precision), significance);
         }
 
         static public string siScale(double number, double precision, int significance)
@@ -469,7 +469,7 @@ namespace Common
             divider = Math.Pow(1000.0, divider);
             number = number / divider;
             //The round to precision
-            number = precisionRound(number, precision / divider);
+            number = precisionTruncate(number, precision / divider);
             return numberSignificanceFormat(number, significance);
         }
         static public string siPrefix(double number, string unit)
