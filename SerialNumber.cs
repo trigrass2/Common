@@ -33,7 +33,8 @@ namespace Common
         {
             Unknown = -1,
             Tolstraat = 0,
-            Poperinge = 1
+            Poperinge = 1,
+            Oradea = 2,
         };
         
         const int MODEL_OFFSET = 36*36; //"?00";
