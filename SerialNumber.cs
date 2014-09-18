@@ -110,7 +110,7 @@ namespace Common
             return result.AddDays(-3);
         }
 
-        public static bool GenerateUnique(Plant p, Model m, DateTime t, List<string> serialList, ref string serial)
+        public static bool GenerateUnique(Plant p, Model m, DateTime t, List<string> serialList, ref SerialNumber serial)
         {
             string serialPattern = Generate(p, m, 0, t);
             //Replace number part in serial with ?
@@ -127,7 +127,7 @@ namespace Common
                 }
                 number = filteredSerials.Max() + 1;
             }
-            serial = Generate(p, m, number, t);
+            serial = new SerialNumber(Generate(p, m, number, t));
             return true;
         }
     }
