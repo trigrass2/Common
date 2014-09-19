@@ -44,10 +44,10 @@ namespace Common
         public enum Model
         {
             Unknown              = -1,
-            SmartScope_Proto_3_3 = (MODEL_SMARTSCOPE * MODEL_OFFSET) + (0 * GENERATION_OFFSET) + 0,
-            SmartScope_3_4_0     = (MODEL_SMARTSCOPE * MODEL_OFFSET) + (1 * GENERATION_OFFSET) + 0,
-            SmartScope_3_5_0     = (MODEL_SMARTSCOPE * MODEL_OFFSET) + (1 * GENERATION_OFFSET) + 1,
-            SmartScope_3_7_0     = (MODEL_SMARTSCOPE * MODEL_OFFSET) + (1 * GENERATION_OFFSET) + 2,
+            SmartScope_A00 = (MODEL_SMARTSCOPE * MODEL_OFFSET) + (0 * GENERATION_OFFSET) + 0,
+            SmartScope_A10     = (MODEL_SMARTSCOPE * MODEL_OFFSET) + (1 * GENERATION_OFFSET) + 0,
+            SmartScope_A11     = (MODEL_SMARTSCOPE * MODEL_OFFSET) + (1 * GENERATION_OFFSET) + 1,
+            SmartScope_A12     = (MODEL_SMARTSCOPE * MODEL_OFFSET) + (1 * GENERATION_OFFSET) + 2,
         }
 
         public static void LogModelsAndPlants()
