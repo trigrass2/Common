@@ -528,6 +528,28 @@ namespace Common
             return System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + extension;
         }
 
+
+        public static bool findSerialAddress(string defaultSerial, byte[] data, out int serialAddress)
+        {
+            serialAddress = -1;
+            byte[] serialBytes = System.Text.Encoding.Unicode.GetBytes(defaultSerial);
+            for (int i = 0; i < data.Length - serialBytes.Length; i++)
+            {
+                bool match = true;
+                for (int j = 0; j < serialBytes.Length; j++)
+                {
+                    match &= data[j + i] == serialBytes[j];
+                }
+                if (match)
+                {
+                    serialAddress = i;
+                    break;
+                }
+            }
+            if (serialAddress < 0)
+                return false;
+            return true;
+        }
     }
 
 }
