@@ -17,6 +17,7 @@
       <Platform Name="MacOS">MONOMAC</Platform>
       <Platform Name="Windows">TRACE;WINDOWS</Platform>
     </CustomDefinitions>
+	<NoWarn>1591</NoWarn>
   </Properties>
   <References>
     <Reference Include="System" />
