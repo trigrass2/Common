@@ -3,7 +3,7 @@
   <ProjectGuids>
     <Platform Name="Android">5ff7e551-40aa-4a57-b83b-e8e78d440e2f</Platform>
     <Platform Name="iOS">c22bb190-5a1c-4258-b04d-4658a5717f6a</Platform>
-    <Platform Name="Linux">35253CE1-C864-4CD3-8249-4D1319748E8F</Platform>
+    <Platform Name="Linux">7ad6a345-3df2-4974-94c3-607395b50922</Platform>
     <Platform Name="MacOS">9565f8b7-e746-40ff-a7d5-8b4450bae5d1</Platform>
     <Platform Name="Windows">D119D2F8-3ABA-4C7A-9A8B-FD8C755633BA</Platform>
   </ProjectGuids>
