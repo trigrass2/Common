@@ -111,10 +111,11 @@ namespace Common
         }
 
         /// <summary>
-        /// Applies operator on each element of an array
+        /// Applies operator on each element of an input array
         /// </summary>
-        /// <typeparam name="I">Type of array element</typeparam>
-        /// <param name="input">Array to transform</param>
+        /// <typeparam name="I">Type of input array elements</typeparam>
+        /// <typeparam name="O">Type of output array elements</typeparam>
+        /// <param name="input">Input array</param>
         /// <param name="op">Operator lambda expression</param>
         public static O[] TransformArray<I, O>(I[] input, Func<I, O> op)
         {
@@ -129,10 +130,13 @@ namespace Common
         /// <summary>
         /// Combines 2 arrays into a new one by applying lamba on each element
         /// </summary>
-        /// <typeparam name="I"></typeparam>
+        /// <typeparam name="I1">Type of input1 array elements</typeparam>
+        /// <typeparam name="I2">Type of input2 array elements</typeparam>
+        /// <typeparam name="O">Type of returned array elemenets</typeparam>
         /// <param name="input1">Array with first argument of lambda</param>
         /// <param name="input2">Array with second argument of lambda</param>
         /// <param name="op">Lambda, i.e. to sum 2 arrays: Func&lt;T,T,T&gt; sum = (x, y) => x + y"/></param>
+        /// <returns></returns>
         public static O[] CombineArrays<I1, I2, O>(I1[] input1, I2[] input2, ref Func<I1, I2, O> op)
         {
             if (input1 == null || input2 == null) return null;
