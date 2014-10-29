@@ -137,7 +137,7 @@ namespace Common
         /// <param name="input2">Array with second argument of lambda</param>
         /// <param name="op">Lambda, i.e. to sum 2 arrays: Func&lt;T,T,T&gt; sum = (x, y) => x + y"/></param>
         /// <returns></returns>
-        public static O[] CombineArrays<I1, I2, O>(I1[] input1, I2[] input2, ref Func<I1, I2, O> op)
+        public static O[] CombineArrays<I1, I2, O>(I1[] input1, I2[] input2, Func<I1, I2, O> op)
         {
             if (input1 == null || input2 == null) return null;
             if (input1.Length != input2.Length)
