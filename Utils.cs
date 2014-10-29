@@ -432,7 +432,8 @@ namespace Common
             //If no significance specified, return the entire number
             if (significance == 0)
                 return String.Format("{0}", number);
-            
+
+            number = significanceTruncate(number, significance);
             //Split into whole and decimal parts
             //i.e. 123.456
             //parts[0] = "123"
@@ -472,11 +473,11 @@ namespace Common
             return number < 0 ? "-" + result : result;
         }
 
-        static public double precisionTruncate(double number, double precision)
+        static public double precisionRound(double number, double precision)
         {
             if (precision == 0)
                 return number;
-            return Math.Truncate(number / precision) * precision;
+            return Math.Round(number / precision) * precision;
         }
 
         /// <summary>
@@ -499,7 +500,7 @@ namespace Common
 
         static public string precisionFormat(double number, double precision, int significance)
         {
-            return numberSignificanceFormat(precisionTruncate(number, precision), significance);
+            return numberSignificanceFormat(precisionRound(number, precision), significance);
         }
 
         /// <summary>
@@ -518,12 +519,12 @@ namespace Common
         /// <returns></returns>
         static public string siScale(double number, double precision, int significance)
         {
-            //First scale it to si scale
+            //Round to the specified precision
+            number = precisionRound(number, precision);
+            //Then scale it to si scale
             double divider = number == 0 ? 1 : Math.Floor((Math.Log(Math.Abs(number), 1000)));
             divider = Math.Pow(1000.0, divider);
             number = number / divider;
-            //The round to precision
-            number = precisionTruncate(number, precision / divider);
             return numberSignificanceFormat(number, significance);
         }
         static public string siPrefix(double number, string unit)
