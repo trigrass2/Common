@@ -430,7 +430,7 @@ namespace Common
         static public string numberSignificanceFormat(double number, int significance)
         {
             //If no significance specified, return the entire number
-            if (significance == 0)
+            if (significance == 0 || double.IsNaN(number))
                 return String.Format("{0}", number);
 
             number = significanceTruncate(number, significance);
@@ -490,7 +490,7 @@ namespace Common
         {
             if (significance == 0)
                 return number;
-            if (number == 0)
+            if (number == 0 || double.IsNaN(number))
                 return number;
             int scale = (int)Math.Floor(Math.Log10(Math.Abs(number)));
             int maxScale = scale - significance + 1;
