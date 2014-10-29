@@ -421,32 +421,50 @@ namespace Common
             return Utils.TransformArray(input, boolToFloat);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="number">The number to format</param>
+        /// <param name="significance">Significant numbers</param>
+        /// <returns></returns>
         static public string numberSignificanceFormat(double number, int significance)
         {
+            //If no significance specified, return the entire number
             if (significance == 0)
                 return String.Format("{0}", number);
             
+            //Split into whole and decimal parts
+            //i.e. 123.456
+            //parts[0] = "123"
+            //parts[1] = "456"
             string[] parts = Math.Abs(number).ToString().Split(System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator[0]);
 
-            //Take the whole part for as far as possble
+            //Take the whole part for as far as possible
+            //i.e. if significance is 2 --> result becomes "12"
             string result = parts[0].Substring(0, (Math.Min(parts[0].Length, significance)));
 
             //If we achieved the significance return but add 0's if necessary
             if (result.Length == significance)
             {
+                //i.e. in the example above, need to add one "0" to achieve "120"
                 if (result.Length < parts[0].Length)
                 {
                     result = String.Concat(result, new String('0', parts[0].Length - result.Length));
                 }
             }
             //Add decimal part
+            //i.e. if significance is 4, result so far is "123"
             else
             {
+                //Add decimal dot
                 result += System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator[0];
+                //Make sure we actually have a decimal part
                 if(parts.Length == 2)
                     result += parts[1].Substring(0, Math.Min(parts[1].Length, significance - parts[0].Length));
                 if (result.Length - 1 < significance)
                 {
+                    //Pad with zeroes to achieve significance
+                    //i.e. if significance was 8, will result in "123.45600"
                     result = String.Concat(result, new String('0', significance - (result.Length-1)));
                 }
             }
@@ -458,7 +476,25 @@ namespace Common
         {
             if (precision == 0)
                 return number;
-            return ((int)Math.Truncate(number / precision)) * precision;
+            return Math.Truncate(number / precision) * precision;
+        }
+
+        /// <summary>
+        /// Truncates a number to have [significance] significant figures
+        /// </summary>
+        /// <param name="number"></param>
+        /// <param name="significance"></param>
+        /// <returns></returns>
+        static public double significanceTruncate(double number, int significance)
+        {
+            if (significance == 0)
+                return number;
+            if (number == 0)
+                return number;
+            int scale = (int)Math.Log10(Math.Abs(number));
+            int maxScale = scale - significance + 1;
+            double rounder = Math.Pow(10, maxScale);
+            return Math.Floor(Math.Abs(number) / rounder) * rounder * Math.Sign(number);
         }
 
         static public string precisionFormat(double number, double precision, int significance)
@@ -466,6 +502,20 @@ namespace Common
             return numberSignificanceFormat(precisionTruncate(number, precision), significance);
         }
 
+        /// <summary>
+        /// Convert a number to SI scale, given a certain precision and significance
+        /// 
+        /// (123456.789,   100, 4) --> 123.4
+        /// (123456.789, 10000, 1) --> 100
+        /// (123456.789, 10000, 3) --> 120
+        /// ( 23456.789, 10000, 3) --> 20
+        /// ( 23456.789,    10, 3) --> 23.4
+        /// ( 23456.789,    10, 5) --> 23.450
+        /// </summary>
+        /// <param name="number">The number to scale</param>
+        /// <param name="precision">The precision to which to round the number</param>
+        /// <param name="significance">The number of significant figure in the result</param>
+        /// <returns></returns>
         static public string siScale(double number, double precision, int significance)
         {
             //First scale it to si scale
