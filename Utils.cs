@@ -605,6 +605,17 @@ namespace Common
                 return false;
             return true;
         }
+
+        public static T GetNextEnum<T>(T v) where T : struct, IConvertible
+        {
+            if (!typeof(T).IsEnum) throw new ArgumentException("T must be an enumerated type");
+            var enumValues = Enum.GetValues(typeof(T)).Cast<T>().OrderBy(e => e).ToList();
+            var nextValues = enumValues.Where(e => Convert.ToInt32(e) > Convert.ToInt32(v));
+            if (nextValues.Count() == 0)
+                return enumValues.First();
+
+            return nextValues.First(); ;
+        }
     }
 
 }
