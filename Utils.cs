@@ -535,7 +535,7 @@ namespace Common
                 case -4: return "p" + unit;
                 case -3: return "n" + unit;
                 //FIXME: use μ when spritefont supports this character
-                case -2: return "u" + unit;
+                case -2: return "µ" + unit;
                 case -1: return "m" + unit;
                 case 0: return unit;
                 case 1: return "k" + unit;
