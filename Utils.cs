@@ -597,7 +597,21 @@ namespace Common
             return nextValues.First(); ;
         }
 
-        public static int RunProcess(string filename, string arguments, string workPath, int timeout, out string output, out string error, bool elevate = false)
+        public static int RunProcessElevated(string filename, string arguments)
+        {
+            using (Process process = new Process())
+            {
+                process.StartInfo.FileName = filename;
+                process.StartInfo.Arguments = arguments;
+                process.StartInfo.UseShellExecute = true;
+                process.StartInfo.Verb= "runas";
+                process.Start();
+                process.WaitForExit();
+                return process.ExitCode;
+            }
+        }
+
+        public static int RunProcess(string filename, string arguments, string workPath, int timeout, out string output, out string error)
         {
             using (Process process = new Process())
             {
@@ -608,8 +622,6 @@ namespace Common
                 process.StartInfo.RedirectStandardError = true;
                 if (workPath != null)
                     process.StartInfo.WorkingDirectory = workPath;
-                if (elevate)
-                    process.StartInfo.Verb = "runas";
 
                 StringBuilder outputBuilder = new StringBuilder();
                 StringBuilder errorBuilder = new StringBuilder();
