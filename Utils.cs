@@ -5,6 +5,7 @@ using System.Text;
 using System.IO;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
+using System.Threading;
 
 namespace Common
 {
@@ -32,27 +33,6 @@ namespace Common
                 }
             }
             return files;
-        }
-        public static int RunCommand(string command, string arguments, out string[] output)
-        {
-            // Start the child process.
-            Process p = new Process();
-            // Redirect the output stream of the child process.
-            p.StartInfo.UseShellExecute = false;
-            p.StartInfo.RedirectStandardOutput = true;
-            p.StartInfo.FileName = command;
-            p.StartInfo.Arguments = arguments;
-            p.Start();
-            // Do not wait for the child process to exit before
-            // reading to the end of its redirected stream.
-            // p.WaitForExit();
-            // Read the output stream first and then wait.
-            List<String> outputList = new List<string>();
-            while (!p.StandardOutput.EndOfStream)
-                outputList.Add(p.StandardOutput.ReadLine());
-            p.WaitForExit();
-            output = outputList.ToArray();
-            return p.ExitCode;
         }
 
         public static string WildcardToRegex(string pattern)
@@ -616,6 +596,72 @@ namespace Common
 
             return nextValues.First(); ;
         }
+
+        public static int RunProcess(string filename, string arguments, string workPath, int timeout, out string output, out string error)
+        {
+            using (Process process = new Process())
+            {
+                process.StartInfo.FileName = filename;
+                process.StartInfo.Arguments = arguments;
+                process.StartInfo.UseShellExecute = false;
+                process.StartInfo.RedirectStandardOutput = true;
+                process.StartInfo.RedirectStandardError = true;
+                if (workPath != null)
+                {
+                    process.StartInfo.WorkingDirectory = workPath;
+                }
+
+                StringBuilder outputBuilder = new StringBuilder();
+                StringBuilder errorBuilder = new StringBuilder();
+
+                using (AutoResetEvent outputWaitHandle = new AutoResetEvent(false))
+                using (AutoResetEvent errorWaitHandle = new AutoResetEvent(false))
+                {
+                    process.OutputDataReceived += (sender, e) =>
+                    {
+                        if (e.Data == null)
+                        {
+                            outputWaitHandle.Set();
+                        }
+                        else
+                        {
+                            outputBuilder.AppendLine(e.Data);
+                        }
+                    };
+                    process.ErrorDataReceived += (sender, e) =>
+                    {
+                        if (e.Data == null)
+                        {
+                            errorWaitHandle.Set();
+                        }
+                        else
+                        {
+                            errorBuilder.AppendLine(e.Data);
+                        }
+                    };
+
+                    process.Start();
+
+                    process.BeginOutputReadLine();
+                    process.BeginErrorReadLine();
+
+                    if (timeout > 0)
+                        process.WaitForExit(timeout);
+                    else
+                        process.WaitForExit();
+                    outputWaitHandle.WaitOne(timeout);
+                    errorWaitHandle.WaitOne(timeout);
+
+                    output = outputBuilder.ToString();
+                    error = errorBuilder.ToString();
+                    if (process.HasExited)
+                        return process.ExitCode;
+                    else
+                        return -1;
+                }
+            }
+        }
+
     }
 
 }
