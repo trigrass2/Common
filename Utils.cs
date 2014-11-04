@@ -597,7 +597,7 @@ namespace Common
             return nextValues.First(); ;
         }
 
-        public static int RunProcess(string filename, string arguments, string workPath, int timeout, out string output, out string error)
+        public static int RunProcess(string filename, string arguments, string workPath, int timeout, out string output, out string error, bool elevate = false)
         {
             using (Process process = new Process())
             {
@@ -607,9 +607,9 @@ namespace Common
                 process.StartInfo.RedirectStandardOutput = true;
                 process.StartInfo.RedirectStandardError = true;
                 if (workPath != null)
-                {
                     process.StartInfo.WorkingDirectory = workPath;
-                }
+                if (elevate)
+                    process.StartInfo.Verb = "runas";
 
                 StringBuilder outputBuilder = new StringBuilder();
                 StringBuilder errorBuilder = new StringBuilder();
