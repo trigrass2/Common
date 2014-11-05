@@ -525,33 +525,7 @@ namespace Common
                 default: return unit;
             }
         }
-        /// <summary>
-        /// Finds the per-division magnitude
-        /// </summary>
-        /// <param name="fullRange">full range of the screen</param>
-        /// <param name="divisions">the number of divisions on the screen</param>
-        /// <returns></returns>
-        static public double divisionFinder(ref double fullRange, ref double divisions)
-        {
-            double divisionMinimalRange = fullRange / divisions;
-            //First figure out if the division's base is going to be 2, 5 or 10
-            double divisionBase = 10;
-            double mostSignificantDecimal = Math.Floor(divisionMinimalRange / Math.Pow(10.0, Math.Floor(Math.Log10(divisionMinimalRange)))); //eg: 200, 20 and 2 all become 2
-            while (mostSignificantDecimal < Math.Floor(divisionBase / 2.0))
-            {
-                divisionBase = Math.Floor(divisionBase / 2.0); //becomes 10,5,2
-            }
-            //Now we find out if, for e.g. 2, if we're having a 2, 20 or 200, the so-called "tens"
-            double orderOfThousand = Math.Floor(Math.Log(divisionMinimalRange, 1000.0));
-            int tens = (int)Math.Floor(Math.Log10(divisionMinimalRange / Math.Pow(1000, orderOfThousand)));
-
-            //Now we just put it all together
-            double divisionRange = divisionBase * Math.Pow(10, tens + 3 * orderOfThousand);
-            divisions = fullRange / divisionRange;
-            fullRange = (float)(divisionRange * divisions);
-            return divisionRange;
-        }
-
+            
         public static IEnumerable<double> EnumerableRange(double min, double max, int steps)
         {
             return Enumerable.Range(0, steps)
