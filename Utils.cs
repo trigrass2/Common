@@ -507,8 +507,9 @@ namespace Common
             number = number / divider;
             return numberSignificanceFormat(number, significance);
         }
-        static public string siPrefix(double number, string unit)
+        static public string siPrefix(double number, double precision, string unit)
         {
+            number = precisionRound(number, precision);
             int scale = number == 0 ? 0 : (int)(Math.Floor(Math.Log(Math.Abs(number), 1000)));
             switch (scale)
             {
