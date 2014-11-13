@@ -1,6 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Name="Common" Path="./" Type="Library" Platforms="Android,iOS,Linux,MacOS,Windows">
   <Properties>
+    <FrameworkVersions>
+      <Platform Name="Android">
+        <Version>v4.0</Version>
+      </Platform>
+    </FrameworkVersions>
     <RootNamespace>Common</RootNamespace>
     <PlatformSpecificOutputFolder>True</PlatformSpecificOutputFolder>
     <CustomDefinitions>
@@ -16,7 +21,6 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
