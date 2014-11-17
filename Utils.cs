@@ -6,6 +6,9 @@ using System.IO;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Threading;
+#if WINDOWS
+using System.Management;
+#endif
 
 namespace Common
 {
@@ -649,6 +652,38 @@ namespace Common
             }
         }
 
+#if WINDOWS
+        public static bool TestUsbDeviceFound(int VID, int PID, out string serial)
+        {
+            serial = null;
+            try
+            {
+                ManagementObjectSearcher searcher =
+                    new ManagementObjectSearcher("root\\CIMV2",
+                    String.Format("SELECT DeviceID FROM Win32_PnPEntity WHERE DeviceID LIKE '%VID_{0:X4}&PID_{1:X4}%'", VID, PID));
+
+                foreach (ManagementObject queryObj in searcher.Get())
+                {
+                    Logger.Debug("-----------------------------------");
+                    Logger.Debug("Win32_PnPEntity instance");
+                    Logger.Debug("-----------------------------------");
+                    Logger.Debug(String.Format("DeviceID: {0}", queryObj["DeviceID"]));
+                    state = Task.Status.PASS;
+                    serial = Utils.parseSerialFromDeviceID((string)queryObj["DeviceID"]);
+                    message = String.Format("Found device with VID:PID {0:X4}:{1:X4} with serial {2}", VID, PID, serial);
+                    return true;
+                }
+                Logger.Debug(String.Format("Device with PID:VID {0:X4}:{1:X4} not found", PID, VID));
+            }
+            catch (ManagementException e)
+            {
+                Logger.Error("An error occurred while querying for WMI data: " + e.Message);
+                return false;
+            }
+
+            return false;
+        }
+#endif
     }
 
 }
