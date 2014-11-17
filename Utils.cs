@@ -668,20 +668,18 @@ namespace Common
                     Logger.Debug("Win32_PnPEntity instance");
                     Logger.Debug("-----------------------------------");
                     Logger.Debug(String.Format("DeviceID: {0}", queryObj["DeviceID"]));
-                    state = Task.Status.PASS;
                     serial = Utils.parseSerialFromDeviceID((string)queryObj["DeviceID"]);
-                    message = String.Format("Found device with VID:PID {0:X4}:{1:X4} with serial {2}", VID, PID, serial);
+                    Logger.Debug(String.Format("Found device with VID:PID {0:X4}:{1:X4} with serial {2}", VID, PID, serial));
                     return true;
                 }
                 Logger.Debug(String.Format("Device with PID:VID {0:X4}:{1:X4} not found", PID, VID));
+                return false;
             }
             catch (ManagementException e)
             {
                 Logger.Error("An error occurred while querying for WMI data: " + e.Message);
                 return false;
             }
-
-            return false;
         }
 #endif
     }

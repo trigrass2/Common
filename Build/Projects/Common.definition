@@ -19,6 +19,7 @@
   </Properties>
   <References>
     <Reference Include="System" />
+	<Reference Include="System.Management" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Microsoft.CSharp" />
