@@ -575,7 +575,7 @@ namespace Common
             return nextValues.First(); ;
         }
 
-        public static int RunProcessElevated(string filename, string arguments)
+        public static int RunProcessElevated(string filename, string arguments, bool hidden = false)
         {
             using (Process process = new Process())
             {
@@ -583,6 +583,8 @@ namespace Common
                 process.StartInfo.Arguments = arguments;
                 process.StartInfo.UseShellExecute = true;
                 process.StartInfo.Verb= "runas";
+                if(hidden)
+                    process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
                 process.Start();
                 process.WaitForExit();
                 return process.ExitCode;
