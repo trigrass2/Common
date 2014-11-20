@@ -8,6 +8,8 @@ using System.Text.RegularExpressions;
 using System.Threading;
 #if WINDOWS
 using System.Management;
+#elif ANDROID
+using Android.OS.Storage;
 #endif
 
 namespace Common
@@ -198,7 +200,12 @@ namespace Common
         {
             get
             {
-                string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments, Environment.SpecialFolderOption.DoNotVerify);
+                string path = 
+#if ANDROID
+                Android.OS.Environment.ExternalStorageDirectory.AbsolutePath;
+#else
+                Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments, Environment.SpecialFolderOption.DoNotVerify);
+#endif
 #if !__IOS__
                 path = Path.Combine(path, "LabNation");
 #endif
