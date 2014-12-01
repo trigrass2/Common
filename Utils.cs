@@ -470,6 +470,14 @@ namespace Common
             return Math.Round(number / precision) * precision;
         }
 
+        static public double precisionFloor(double number, double precision)
+        {
+            if (precision == 0)
+                return number;
+            return Math.Floor(number / precision) * precision;
+        }
+
+
         /// <summary>
         /// Truncates a number to have [significance] significant figures
         /// </summary>
