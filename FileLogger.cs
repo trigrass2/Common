@@ -10,28 +10,40 @@ namespace Common
 {
     public class FileLogger
     {
-        string path;
-        FileStream stream;
+        static List<FileLogger> loggers = new List<FileLogger>();
         StreamWriter writer;
         Thread dumpThread;
         ConcurrentQueue<LogMessage> logQueue;
         bool running;
         LogLevel logLevel;
 
-        public FileLogger(string filename, LogLevel level)
+        public FileLogger(StreamWriter writer, LogLevel level)
         {
             this.logLevel = level;
-            path = Path.Combine(Common.Utils.StoragePath, filename);
-            stream = new FileStream(this.path, FileMode.Append);
-            writer = new StreamWriter(stream);
+            this.writer = writer;
             logQueue = new ConcurrentQueue<LogMessage>();
             Logger.AddQueue(logQueue);
-
 
             dumpThread = new Thread(dumpThreadStart);
             running = true;
             dumpThread.Start();
-	        Logger.Info("Started file logger in " + path);
+            loggers.Add(this);
+        }
+
+
+
+        public FileLogger(string filename, LogLevel level) : this(
+            new StreamWriter(new FileStream(Path.Combine(Common.Utils.StoragePath, filename), FileMode.Append)),
+            level
+            )
+        {
+	        Logger.Info("Started file logger in " + ((FileStream)this.writer.BaseStream).Name);
+        }
+
+        public static void StopAll()
+        {
+            foreach (FileLogger l in loggers)
+                l.Stop();
         }
 
         public void Stop()
