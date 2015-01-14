@@ -69,6 +69,7 @@ namespace Common
                 writer.Flush();
                 Thread.Sleep(50);
             }
+            writer.Flush();
         }
     }
 }
