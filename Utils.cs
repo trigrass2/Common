@@ -125,10 +125,9 @@ namespace Common
         public static O[] CombineArrays<I1, I2, O>(I1[] input1, I2[] input2, Func<I1, I2, O> op)
         {
             if (input1 == null || input2 == null) return null;
-            if (input1.Length != input2.Length)
-                throw new Exception("Cannot combine arrays of different length");
-            O[] output = new O[input1.Length];
-            for (int i = 0; i < input1.Length; i++)
+            int resultLength = Math.Min(input1.Length, input2.Length);
+            O[] output = new O[resultLength];
+            for (int i = 0; i < resultLength; i++)
             {
                 output[i] = op(input1[i], input2[i]);
             }
