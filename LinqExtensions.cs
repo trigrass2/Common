@@ -7,22 +7,24 @@ namespace Common
 {
     public static class Extensions
     {
-        public static float StdDev(this IEnumerable<float> values)
+        public static double StdDev(this IEnumerable<double> values)
         {
-            float ret = 0;
-            int count = values.Count();
-            if (count > 1)
+            // ref: http://warrenseen.com/blog/2006/03/13/how-to-calculate-standard-deviation/
+            double mean = 0.0;
+            double sum = 0.0;
+            double stdDev = 0.0;
+            int n = 0;
+            foreach (double val in values)
             {
-                //Compute the Average
-                double avg = values.Average();
-
-                //Perform the Sum of (value-avg)^2
-                double sum = values.Sum(d => (d - avg) * (d - avg));
-
-                //Put it all together
-                ret = (float)Math.Sqrt(sum / count);
+                n++;
+                double delta = val - mean;
+                mean += delta / n;
+                sum += delta * (val - mean);
             }
-            return ret;
+            if (1 < n)
+                stdDev = Math.Sqrt(sum / (n - 1));
+
+            return stdDev;
         }
 
         public static float Median(this IEnumerable<float> source)
