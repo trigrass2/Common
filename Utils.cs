@@ -215,9 +215,9 @@ namespace Common
 
         public static bool Schmitt(float value, bool previousValue, float thresholdHigh, float thresholdLow)
         {
-            if (value >= thresholdHigh)
+            if (value > thresholdHigh)
                 return true;
-            else if (value <= thresholdLow)
+            else if (value < thresholdLow)
                 return false;
             else
                 return previousValue;
