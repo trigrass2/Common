@@ -20,8 +20,6 @@ namespace Common
         {
             if (files == null)
                 files = new List<FileInfo>();
-            string[] filetypes = new string[] { "3gp", "avi", "dat", "mp4", "wmv", 
-                                                     "mov", "mpg", "flv",  };
             foreach (string file in Directory.GetFiles(dir, pattern,
                                                    SearchOption.TopDirectoryOnly))
             {
