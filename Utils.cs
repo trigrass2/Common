@@ -193,6 +193,21 @@ namespace Common
                 return path;
             }
         }
+
+        public static string[] PluginPaths
+        {
+            get
+            {
+                return new string[] {
+                    Environment.CurrentDirectory,
+#if DEBUG
+                    Path.Combine(new string[] { Environment.CurrentDirectory, "..", "..", "..", "..", "..", "Decoders", "Default", "bin", "Debug"),
+#endif
+                    Path.Combine(StoragePath, "Plugins")
+                };
+            }
+        }
+
         public static string StoragePath
         {
             get
