@@ -201,7 +201,7 @@ namespace Common
                 return new string[] {
                     Environment.CurrentDirectory,
 #if DEBUG
-                    Path.Combine(new string[] { Environment.CurrentDirectory, "..", "..", "..", "..", "..", "Decoders", "Default", "bin", "Debug"),
+                    Path.Combine(new string[] { Environment.CurrentDirectory, "..", "..", "..", "..", "..", "Decoders", "Default", "bin", "Debug"} ),
 #endif
                     Path.Combine(StoragePath, "Plugins")
                 };
