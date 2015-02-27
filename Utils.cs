@@ -6,6 +6,7 @@ using System.IO;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Reflection;
 #if WINDOWS
 using System.Management;
 #elif ANDROID
@@ -194,14 +195,20 @@ namespace Common
             }
         }
 
+        public static string ExecutablePath {
+			get {
+				return Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+			}
+		}
+
         public static string[] PluginPaths
         {
             get
             {
                 return new string[] {
-                    Environment.CurrentDirectory,
-#if DEBUG
-					Path.Combine(new string[] { Environment.CurrentDirectory, "..", "..", "..", "..", "..", 
+					ExecutablePath,
+#if DEBUG && !ANDROID
+					Path.Combine(new string[] { ExecutablePath, "..", "..", "..", "..", "..", 
                     #if MONOMAC
 					"..", "..", "..",
                     #endif
