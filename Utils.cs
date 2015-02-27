@@ -201,6 +201,12 @@ namespace Common
 			}
 		}
 
+		public static string PluginPathDropbox {
+			get {
+				return Path.Combine(StoragePath, "Plugins", "dropbox");
+			}
+		}
+
         public static string[] PluginPaths
         {
             get
@@ -214,8 +220,9 @@ namespace Common
                     #endif
 					"Decoders", "Default", "bin", "Debug"} ),
 #else
-                    Path.Combine(StoragePath, "Plugins")
+                    Path.Combine(StoragePath, "Plugins"),
 #endif
+                    PluginPathDropbox
                 };
             }
         }
