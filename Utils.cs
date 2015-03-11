@@ -187,7 +187,7 @@ namespace Common
             get
             {
                 string path = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData, Environment.SpecialFolderOption.DoNotVerify);
-#if !__IOS__
+#if !__IOS__ && !ANDROID
                 path = Path.Combine(path, "LabNation");
 #endif
                 System.IO.Directory.CreateDirectory(path);
@@ -197,7 +197,11 @@ namespace Common
 
         public static string ExecutablePath {
 			get {
+				#if ANDROID
+				throw new IOException("Can't use executable path on Android!");
+				#else
 				return Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+				#endif
 			}
 		}
 
@@ -212,7 +216,6 @@ namespace Common
             get
             {
                 return new string[] {
-					ExecutablePath,
 #if DEBUG && !ANDROID
 					Path.Combine(new string[] { ExecutablePath, "..", "..", "..", "..", "..", 
                     #if MONOMAC
