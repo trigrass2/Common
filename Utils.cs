@@ -101,13 +101,14 @@ namespace Common
         /// <typeparam name="O">Type of output array elements</typeparam>
         /// <param name="input">Input array</param>
         /// <param name="op">Operator lambda expression</param>
-        public static O[] TransformArray<I, O>(I[] input, Func<I, O> op)
+        public static O[] TransformArray<I, O>(Array input, Func<I, O> op)
         {
             if (input == null) return null;
+            I[] inputCast = (I[])input;
             O[] output = new O[input.Length];
-            for (int i = 0; i < input.Length; i++)
+            for (int i = 0; i < inputCast.Length; i++)
             {
-                output[i] = op(input[i]);
+                output[i] = op(inputCast[i]);
             }
             return output;
         }
